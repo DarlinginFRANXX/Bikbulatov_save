@@ -1,0 +1,16 @@
+﻿<Application x:Class="Bikbulatov_save.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:Bikbulatov_save"
+             StartupUri="MainWindow.xaml">
+    <Application.Resources>
+        <Style TargetType="Button">
+            <Setter Property="Margin" Value="5"/>
+            <Setter Property="Width" Value="175"/>
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="Background" Value="#B175EE"/>
+            <Setter Property="FontSize" Value="20"/>
+        </Style>
+        
+    </Application.Resources>
+</Application>
