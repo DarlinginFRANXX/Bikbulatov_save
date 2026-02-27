@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Bikbulatov_save"
         mc:Ignorable="d"
-        Title="Бикбулатов" Height="450" Width="800" Icon="res/Глазки-save.ico" FontFamily="Century Gothic" MinHeight="815" MinWidth="1350">
+        Title="Бикбулатов" Height="450" Width="800" Icon="res/Глазки-save.ico" FontFamily="Century Gothic" MinHeight="815" MinWidth="1385">
     <Grid>
 
         <Grid.RowDefinitions>
