@@ -1,0 +1,21 @@
+﻿<Window x:Class="Galiev_Глазки_save.PriorChangeWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Galiev_Глазки_save"
+        mc:Ignorable="d"
+        Title="PriorChangeWindow" Height="450" Width="800">
+    <Grid>
+        <StackPanel Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center">
+            <StackPanel Orientation="Horizontal" Margin="10">
+                <Label Content="Приоритет" FontSize="20"></Label>
+
+                <TextBox Text="" Name="TBPriority" FontSize="20"></TextBox>
+            </StackPanel>
+
+            <Button Name="ChangePrior" Content="Изменить приоритет" FontSize="20" Width="250"
+                    Click="ChangePrior_Click"></Button>
+        </StackPanel>
+    </Grid>
+</Window>

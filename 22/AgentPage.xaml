@@ -1,12 +1,12 @@
-﻿<Page x:Class="Bikbulatov_save.AgentPage"
+﻿<Page x:Class="Galiev_Глазки_save.AgentPage"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-      xmlns:local="clr-namespace:Bikbulatov_save"
+      xmlns:local="clr-namespace:Galiev_Глазки_save"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
-      Title="AgentPage" FontFamily="Century Gothic">
+      Title="Агенты" FontFamily="Century Gothic">
 
     <Page.Resources>
         <local:StringToImageConverter x:Key="StringToImageConverter" />
@@ -22,9 +22,12 @@
 
         <!-- Поиск и фильтры -->
         <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Center">
-            <TextBox Name="TBSearch" FontSize="15" Width="250" Margin="5" TextChanged="TBSearch_TextChanged"/>
-            <ComboBox Name="CBSort" SelectionChanged="CBSort_SelectionChanged" FontSize="15" Width="300" Margin="5">
-                <TextBlock>Сортировка</TextBlock>
+            <TextBox Name="TBSearch" FontSize="15" Width="250" Margin="5"
+                     TextChanged="TBSearch_TextChanged"/>
+
+            <ComboBox Name="CBSort" SelectionChanged="CBSort_SelectionChanged" FontSize="15" 
+                      Width="300" Margin="5">
+                <TextBlock>Без сортировки</TextBlock>
                 <TextBlock>Наименование по возрастанию</TextBlock>
                 <TextBlock>Наименование по убыванию</TextBlock>
                 <TextBlock>Скидка по возрастанию</TextBlock>
@@ -32,7 +35,9 @@
                 <TextBlock>Приоритет по возрастанию</TextBlock>
                 <TextBlock>Приоритет по убыванию</TextBlock>
             </ComboBox>
-            <ComboBox Name="CBFilt" FontSize="15" Width="100" Margin="5" SelectionChanged="CBFilt_SelectionChanged">
+
+            <ComboBox Name="CBFilt" FontSize="15" Width="100" Margin="5"
+                      SelectionChanged="CBFilt_SelectionChanged">
                 <TextBlock>Все типы</TextBlock>
                 <TextBlock>ЗАО</TextBlock>
                 <TextBlock>МКК</TextBlock>
@@ -48,13 +53,14 @@
             <Button Content="Добавить агента" Name="AddAgentBtn" FontSize="15" 
                     Width="200" Click="AddAgentBtn_Click" Background="#B175EE" 
                     Height="30" Margin="5"/>
-            <Button Content="Изменить приоритет на..." Name="ChangePriorityBtn" 
-                    Width="200" FontSize="15" Click="ChangePriorityBtn_Click" 
+            <Button Content="Изменить приоритет" Name="ChangePriorityBtn" 
+                    Width="180" FontSize="15" Click="ChangePriorityBtn_Click" 
                     Visibility="Hidden" Background="#B175EE" Height="30" Margin="5"/>
         </StackPanel>
 
         <!-- Список агентов -->
-        <ListView Name="AgentListView" Grid.Row="2" Margin="10" SelectionChanged="AgentListView_SelectionChanged">
+        <ListView Name="AgentListView" Grid.Row="2" Margin="10"
+                  SelectionChanged="AgentListView_SelectionChanged">
             <ListView.ContextMenu>
                 <ContextMenu>
                     <MenuItem Header="Редактировать" Click="MenuItem_Click"/>
@@ -63,18 +69,20 @@
 
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <Border BorderBrush="Black" BorderThickness="1" Margin="1" CornerRadius="5">
-                        <Grid Background="{Binding FonStyle}">
+                    <Border BorderBrush="Black" BorderThickness="1" Margin="1" CornerRadius="5"
+                            Background="{Binding FonStyle}">
+                        <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="30"/>
                                 <RowDefinition Height="30"/>
                                 <RowDefinition Height="30"/>
                                 <RowDefinition Height="30"/>
                             </Grid.RowDefinitions>
+
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"></ColumnDefinition>
-                                <ColumnDefinition Width="1080"></ColumnDefinition>
-                                <ColumnDefinition Width="100"></ColumnDefinition>
+                                <ColumnDefinition Width="150"/>
+                                <ColumnDefinition Width="800"/>
+                                <ColumnDefinition Width="100"/>
                             </Grid.ColumnDefinitions>
 
                             <Image Grid.Column="0" Grid.RowSpan="4" Width="130" Stretch="Uniform"
@@ -99,21 +107,22 @@
                             </StackPanel>
 
                             <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal">
-                                <TextBlock Text="{Binding SaleForYear}" FontSize="15"/>
+                                <TextBlock Text="{Binding SalesForYear}" FontSize="15"/>
                                 <TextBlock Text=" продаж за год" FontSize="15"/>
                             </StackPanel>
 
-                            <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding Phone}" FontSize="15"/>
+                            <TextBlock Grid.Row="2" Grid.Column="1" 
+                                       Text="{Binding Phone}" FontSize="15"/>
 
                             <StackPanel Grid.Row="3" Grid.Column="1" Orientation="Horizontal">
                                 <TextBlock Text="Приоритетность: " FontSize="15"/>
                                 <TextBlock Text="{Binding Priority}" FontSize="15"/>
                             </StackPanel>
 
-                            <TextBlock Grid.RowSpan="4" Grid.Column="2" 
-                                       Text="{Binding Discount, StringFormat={}{0}%}" 
-                                       FontSize="20" VerticalAlignment="Center" 
-                                       HorizontalAlignment="Center" Margin="0,0,10,0"/>
+                            <StackPanel Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                <TextBlock Text="{Binding Discount,StringFormat= скидка {0}%}" FontSize="20"></TextBlock>
+                            </StackPanel>
+
                         </Grid>
                     </Border>
                 </DataTemplate>

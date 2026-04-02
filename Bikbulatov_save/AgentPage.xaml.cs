@@ -1,325 +1,198 @@
-﻿using Bikbulatov_save;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using System.Data.Entity;
 
 namespace Bikbulatov_save
 {
-    /// <summary>
-    /// Логика взаимодействия для AgentPage.xaml
-    /// </summary>
     public partial class AgentPage : Page
     {
+        private List<Agent> _filteredAgents;
+        private int pageSize = 10;
+        private int currentPage = 1;
+
         public AgentPage()
         {
             InitializeComponent();
-
-            //добавляем строки
-            // загрузить в список из бд
-            var currentAgents = Bikbulatov_saveEntities.GetContext().Agent.ToList();
-            // связываем с листвью
-            AgentListView.ItemsSource = currentAgents;
 
             CBSort.SelectedIndex = 0;
             CBFilt.SelectedIndex = 0;
 
             UpdateAgents();
+
+            // 🔥 ВОТ ЭТО ДОБАВЛЕНО
+            this.IsVisibleChanged += AgentPage_IsVisibleChanged;
         }
 
-        int CountRecords; //кол-во записей в таблице 
-        int CountPage; // общее кол-во страниц
-        int CurrentPage = 0; // текущая стр
-        int NumberPage = 10;
-
-        List<Agent> CurrentPageList = new List<Agent>();
-        List<Agent> TableList;
-
-        //функция отв за разделение listа
-        private void ChangePage(int direction, int? selectedPage)
+        // 🔥 НОВЫЙ МЕТОД
+        private void AgentPage_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
-            //direction - направление. 0 - начало, 1 - пред стр
-            // selectedPage - при нажатии на стрелочки передается null
-            // при выборе опред стр в этой переменной находится номер стр
-
-            CurrentPageList.Clear(); //начальная очистка листа
-            CountRecords = TableList.Count;
-
-            // определение кол-во стр
-            if (CountRecords % NumberPage > 0)
+            if (this.IsVisible)
             {
-                CountPage = CountRecords / NumberPage + 1;
-            }
+                var context = Bikbulatov_saveEntities.GetContext();
 
-            else
-            {
-                CountPage = CountRecords / NumberPage;
-            }
-            Boolean Ifupdate = true;
-            // проверка на правильность если
-            //CurrentPage(номер текущ стр) "правильный"
-            int min;
-            if (selectedPage.HasValue)
-            {
-                if (selectedPage >= 0 && selectedPage <= CountPage)
+                // Перезагрузка данных из БД
+                foreach (var entry in context.ChangeTracker.Entries().ToList())
                 {
-                    CurrentPage = (int)selectedPage;
-                    min = CurrentPage * NumberPage + NumberPage < CountRecords ? CurrentPage * 10 + 10 : CountRecords;
-
-                    for (int i = CurrentPage * NumberPage; i < min; i++)
-                    {
-                        CurrentPageList.Add(TableList[i]);
-                    }
-                }
-            }
-            else
-            {
-                switch (direction)
-                {
-                    case 1:
-                        if (CurrentPage > 0)
-                        {
-                            CurrentPage--;
-
-                            min = CurrentPage * NumberPage + NumberPage < CountRecords ? CurrentPage * NumberPage + NumberPage : CountRecords;
-
-                            for (int i = CurrentPage * NumberPage; i < min; i++)
-                            {
-                                CurrentPageList.Add(TableList[i]);
-                            }
-                        }
-                        else
-                        {
-                            Ifupdate = false; // в случае если 
-                            //CurrentPage попытается выйти из диапзаона внесение данных не произойдет
-                        }
-                        break;
-                    case 2: // нажата кнопка след стр
-                        if (CurrentPage < CountPage - 1) // если вперед идти можно
-                        {
-                            CurrentPage++;
-                            min = CurrentPage * NumberPage + NumberPage < CountRecords ? CurrentPage * NumberPage + NumberPage : CountRecords;
-                            for (int i = CurrentPage * NumberPage; i < min; i++)
-                            {
-                                CurrentPageList.Add(TableList[i]);
-                            }
-                        }
-                        else
-                        {
-                            Ifupdate = false;
-                        }
-                        break;
-                }
-            }
-            if (Ifupdate) // если currentPage не вышел из диапзаона, то
-            {
-                PageListBox.Items.Clear();
-                // удаление старых значений из листбокса номеров страниц, нужно чтобы при изменении
-                // кол-ва записей кол-во стр динамически изменялось
-
-                for (int i = 1; i <= CountPage; i++)
-                {
-                    PageListBox.Items.Add(i);
+                    entry.Reload();
                 }
 
-                PageListBox.SelectedIndex = CurrentPage;
-
-                AgentListView.ItemsSource = CurrentPageList;
-                //обновить отображение списка агентов
-                AgentListView.Items.Refresh();
+                UpdateAgents();
             }
         }
 
-
-        private void UpdateAgents()
+        public void UpdateAgents()
         {
-            // все агенты с типом
-            var currentAgents = Bikbulatov_saveEntities.GetContext()
-                                    .Agent.Include("AgentType")
-                                    .ToList();
+            var context = Bikbulatov_saveEntities.GetContext();
 
-            // фильтрация по типу агента
-            if (CBFilt.SelectedIndex == 1)
+            var currentAgents = context.Agent
+                .Include(a => a.AgentType)
+                .Include(a => a.ProductSale.Select(ps => ps.Product))
+                .ToList();
+
+            // Фильтрация
+            string filterType = (CBFilt.SelectedItem as TextBlock)?.Text;
+            if (!string.IsNullOrEmpty(filterType) && filterType != "Все типы")
             {
-                currentAgents = currentAgents.Where(a => a.AgentType.Title == "ЗАО").ToList();
+                currentAgents = currentAgents.Where(a => a.AgentType.Title == filterType).ToList();
             }
 
-            if (CBFilt.SelectedIndex == 2)
-            {
-                currentAgents = currentAgents.Where(a => a.AgentType.Title == "МКК").ToList();
-            }
-
-            if (CBFilt.SelectedIndex == 3)
-            {
-                currentAgents = currentAgents.Where(a => a.AgentType.Title == "МФО").ToList();
-            }
-
-            if (CBFilt.SelectedIndex == 4)
-            {
-                currentAgents = currentAgents.Where(a => a.AgentType.Title == "ОАО").ToList();
-            }
-
-            if (CBFilt.SelectedIndex == 5)
-            {
-                currentAgents = currentAgents.Where(a => a.AgentType.Title == "ООО").ToList();
-            }
-
-            if (CBFilt.SelectedIndex == 6)
-            {
-                currentAgents = currentAgents.Where(a => a.AgentType.Title == "ПАО").ToList();
-            }
-            // поиск по агентам
+            // Поиск
             string searchText = TBSearch.Text.ToLower();
-            // Очищаем поисковый запрос для телефона (убираем все лишние символы)
-            string cleanedSearchPhone = searchText
-                .Replace("+", "")
-                .Replace("(", "")
-                .Replace(")", "")
-                .Replace("-", "")
-                .Replace(" ", "");
-            currentAgents = currentAgents.Where(a =>
-                    // Поиск по названию
-                    (a.Title.ToLower().Contains(searchText)) ||
-                    // Поиск по email   
-                    (a.Email.ToLower().Contains(searchText)) ||
-                    // Поиск по телефону
-                    (a.Phone
-                        .Replace("+", "")
-                        .Replace("(", "")
-                        .Replace(")", "")
-                        .Replace("-", "")
-                        .Replace(" ", "")
-                        .Contains(cleanedSearchPhone))
+            if (!string.IsNullOrWhiteSpace(searchText))
+            {
+                string cleanedSearchPhone = searchText
+                    .Replace("+", "").Replace("(", "").Replace(")", "")
+                    .Replace("-", "").Replace(" ", "").Replace("8", "7");
+
+                currentAgents = currentAgents.Where(a =>
+                    (a.Title?.ToLower().Contains(searchText) == true) ||
+                    (a.Email?.ToLower().Contains(searchText) == true) ||
+                    (a.Phone?.Replace("+", "").Replace("(", "").Replace(")", "")
+                             .Replace("-", "").Replace(" ", "").Replace("8", "7")
+                             .Contains(cleanedSearchPhone) == true)
                 ).ToList();
-
-
-            // сортировка агентов
-            if (CBSort.SelectedIndex == 1)
-            {
-                currentAgents = currentAgents.OrderBy(a => a.Title).ToList();
             }
 
-            if (CBSort.SelectedIndex == 2)
+            // Сортировка
+            switch (CBSort.SelectedIndex)
             {
-                currentAgents = currentAgents.OrderByDescending(a => a.Title).ToList();
+                case 1: currentAgents = currentAgents.OrderBy(a => a.Title).ToList(); break;
+                case 2: currentAgents = currentAgents.OrderByDescending(a => a.Title).ToList(); break;
+                case 3: currentAgents = currentAgents.OrderBy(a => a.Discount).ToList(); break;
+                case 4: currentAgents = currentAgents.OrderByDescending(a => a.Discount).ToList(); break;
+                case 5: currentAgents = currentAgents.OrderBy(a => a.Priority).ToList(); break;
+                case 6: currentAgents = currentAgents.OrderByDescending(a => a.Priority).ToList(); break;
             }
 
-            if (CBSort.SelectedIndex == 3)
-            {
-                currentAgents = currentAgents.OrderBy(a => a.Discount).ToList();
-            }
-
-            if (CBSort.SelectedIndex == 4)
-            {
-                currentAgents = currentAgents.OrderByDescending(a => a.Discount).ToList();
-            }
-
-            if (CBSort.SelectedIndex == 5)
-            {
-                currentAgents = currentAgents.OrderBy(a => a.Priority).ToList();
-            }
-
-            if (CBSort.SelectedIndex == 6)
-            {
-                currentAgents = currentAgents.OrderByDescending(a => a.Priority).ToList();
-            }
-
-            //вывод результата в ListView
-            AgentListView.ItemsSource = currentAgents;
-
-            // заполнение таблицы для постраничного вывода
-            TableList = currentAgents;
-
-            // вызов функции отображения кол-ва стр с параметрами:
-            // направление 0 - нач загрузка
-            // 0 - выбранная стр
-            ChangePage(0, 0);
+            _filteredAgents = currentAgents;
+            currentPage = 1;
+            ChangePage();
+            AgentListView.SelectedItems.Clear();
+            ChangePriorityBtn.Visibility = Visibility.Hidden;
         }
 
-
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void ChangePage()
         {
-            Manager.MainFrame.Navigate(new AddEditPage());
+            PageListBox.Items.Clear();
+
+            int totalPages = (_filteredAgents.Count + pageSize - 1) / pageSize;
+
+            for (int i = 1; i <= totalPages; i++)
+                PageListBox.Items.Add(i);
+
+            PageListBox.SelectedItem = currentPage;
+
+            var agentsPage = _filteredAgents
+                .Skip((currentPage - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+            AgentListView.ItemsSource = agentsPage;
         }
 
         private void AgentListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            ChangePriorityBtn.Visibility =
 
+
+
+AgentListView.SelectedItems.Count > 0
+                ? Visibility.Visible
+                : Visibility.Hidden;
         }
 
-        private void TBSearch_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            UpdateAgents();
-        }
-
-        private void CBSort_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            UpdateAgents();
-        }
-
-        private void CBFilt_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            UpdateAgents();
-        }
+        private void TBSearch_TextChanged(object sender, TextChangedEventArgs e) => UpdateAgents();
+        private void CBSort_SelectionChanged(object sender, SelectionChangedEventArgs e) => UpdateAgents();
+        private void CBFilt_SelectionChanged(object sender, SelectionChangedEventArgs e) => UpdateAgents();
 
         private void ChangePriorityBtn_Click(object sender, RoutedEventArgs e)
         {
+            int maxPriority = AgentListView.SelectedItems.Cast<Agent>().Max(a => a.Priority);
 
+            var priorWindow = new PriorChangeWindow(maxPriority);
+            priorWindow.Owner = Window.GetWindow(this);
+            priorWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            priorWindow.ShowDialog();
+
+            if (int.TryParse(priorWindow.TBPriority.Text, out int newPriority))
+            {
+                foreach (Agent agent in AgentListView.SelectedItems)
+                    agent.Priority = newPriority;
+
+                try
+                {
+                    Bikbulatov_saveEntities.GetContext().SaveChanges();
+                    AgentListView.SelectedItems.Clear();
+                    UpdateAgents();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+            }
         }
 
         private void AddAgentBtn_Click(object sender, RoutedEventArgs e)
         {
-
+            Manager.MainFrame.Navigate(new AddEditPage(null));
         }
 
         private void LeftDirButton_Click(object sender, RoutedEventArgs e)
         {
-            ChangePage(1, null);
+            if (currentPage > 1)
+            {
+                currentPage--;
+                ChangePage();
+            }
         }
 
         private void RightDirButton_Click(object sender, RoutedEventArgs e)
         {
-            ChangePage(2, null);
+            int totalPages = (_filteredAgents.Count + pageSize - 1) / pageSize;
+
+            if (currentPage < totalPages)
+            {
+                currentPage++;
+                ChangePage();
+            }
         }
 
         private void PageListBox_MouseUp(object sender, MouseButtonEventArgs e)
         {
-            ChangePage(0, Convert.ToInt32(PageListBox.SelectedItem.ToString()) - 1);
+            if (PageListBox.SelectedItem is int page && page != currentPage)
+            {
+                currentPage = page;
+                ChangePage();
+            }
         }
 
-        private void CbFilter_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void MenuItem_Click(object sender, RoutedEventArgs e)
         {
-
-        }
-
-        private void CbSort_SelectionChanged_1(object sender, SelectionChangedEventArgs e)
-        {
-
-        }
-
-        private void TbSearch_GotFocus(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void TbSearch_LostFocus(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void TbSearch_TextChanged_1(object sender, TextChangedEventArgs e)
-        {
-
+            Manager.MainFrame.Navigate(new AddEditPage(AgentListView.SelectedItem as Agent));
         }
     }
 }

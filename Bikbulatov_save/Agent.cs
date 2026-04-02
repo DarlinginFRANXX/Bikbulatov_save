@@ -1,11 +1,18 @@
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.IO;
+
 namespace Bikbulatov_save
 {
-    using System;
-    using System.Collections.Generic;
-
-    public partial class Agent
+    public partial class Agent : INotifyPropertyChanged
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public event PropertyChangedEventHandler PropertyChanged;
+        public void OnPropertyChanged(string prop)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
+        }
+
         public Agent()
         {
             this.AgentPriorityHistory = new HashSet<AgentPriorityHistory>();
@@ -22,8 +29,18 @@ namespace Bikbulatov_save
         public string DirectorName { get; set; }
         public string Phone { get; set; }
         public string Email { get; set; }
-        public string Logo { get; set; }
         public int Priority { get; set; }
+
+        private string _logo;
+        public string Logo
+        {
+            get => _logo;
+            set
+            {
+                _logo = value;
+                OnPropertyChanged(nameof(Logo));
+            }
+        }
 
         public int SaleForYear
         {
@@ -32,15 +49,15 @@ namespace Bikbulatov_save
                 int sales = 0;
                 foreach (ProductSale productSale in ProductSale)
                 {
-                    TimeSpan diffrenceWithoutTime = DateTime.Today.Date - productSale.SaleDate.Date;
-                    //if ((int)diffrenceWithoutTime.TotalDays <= 365) 
-                    { 
-                        sales += productSale.ProductCount; 
-                    }
+                    // Раскомментировать для учёта только за последний год
+                    // TimeSpan diff = DateTime.Today - productSale.SaleDate;
+                    // if (diff.TotalDays <= 365)
+                    sales += productSale.ProductCount;
                 }
                 return sales;
             }
         }
+
         public decimal Sales
         {
             get
@@ -53,18 +70,15 @@ namespace Bikbulatov_save
                 return sales;
             }
         }
+
         public int Discount
         {
             get
             {
-                if (this.Sales >= 500000)
-                    return 25;
-                if (this.Sales >= 150000)
-                    return 20;
-                if (this.Sales >= 50000)
-                    return 10;
-                if (this.Sales >= 10000)
-                    return 5;
+                if (this.Sales >= 500000) return 25;
+                if (this.Sales >= 150000) return 20;
+                if (this.Sales >= 50000) return 10;
+                if (this.Sales >= 10000) return 5;
                 return 0;
             }
         }
@@ -73,19 +87,30 @@ namespace Bikbulatov_save
         {
             get
             {
-                if (Discount >= 25)
-                    return "LightGreen";
-                else
-                    return "white";
+                if (Discount >= 25) return "LightGreen";
+                else return "white";
             }
         }
+
+        public string AgentTypeName => AgentType?.Title ?? "Не указан";
+
+        public string AgentPhotoPath
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(Logo)) return null;
+                string fileName = Logo;
+                int lastSlash = fileName.LastIndexOfAny(new[] { '\\', '/' });
+                if (lastSlash >= 0) fileName = fileName.Substring(lastSlash + 1);
+                fileName = fileName.Trim().TrimStart('\\', '/', '"').TrimEnd('"');
+                string fullPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "agents", fileName);
+                return File.Exists(fullPath) ? fullPath : null;
+            }
+        }
+
         public virtual AgentType AgentType { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<AgentPriorityHistory> AgentPriorityHistory { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ProductSale> ProductSale { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Shop> Shop { get; set; }
-        public object DataTime { get; private set; }
     }
 }

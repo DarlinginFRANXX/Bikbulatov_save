@@ -4,10 +4,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{E3E0C71E-F7DE-47A5-AAE5-A1E5AC1BD429}</ProjectGuid>
+    <ProjectGuid>{8DD7725B-4AC7-402D-BF71-91C2D425DC0F}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>Bikbulatov_save</RootNamespace>
-    <AssemblyName>Bikbulatov_save</AssemblyName>
+    <RootNamespace>Galiev_Глазки_save</RootNamespace>
+    <AssemblyName>Galiev_Глазки-save</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -36,10 +36,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
+      <HintPath>packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
     </Reference>
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <HintPath>packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
@@ -64,68 +64,58 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="AddEditPage.xaml.cs">
-      <DependentUpon>AddEditPage.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Agent.cs">
-      <DependentUpon>BikbulatovModel.tt</DependentUpon>
+      <DependentUpon>GalievModel.tt</DependentUpon>
     </Compile>
     <Compile Include="AgentPriorityHistory.cs">
-      <DependentUpon>BikbulatovModel.tt</DependentUpon>
+      <DependentUpon>GalievModel.tt</DependentUpon>
     </Compile>
     <Compile Include="AgentType.cs">
-      <DependentUpon>BikbulatovModel.tt</DependentUpon>
+      <DependentUpon>GalievModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="BikbulatovModel.Context.cs">
+    <Compile Include="GalievModel.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>BikbulatovModel.Context.tt</DependentUpon>
+      <DependentUpon>GalievModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="BikbulatovModel.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>BikbulatovModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="BikbulatovModel.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>BikbulatovModel.edmx</DependentUpon>
-    </Compile>
+    <Compile Include="ImageHelper.cs" />
+    <Compile Include="LogoHelper.cs" />
     <Compile Include="Material.cs">
-      <DependentUpon>BikbulatovModel.tt</DependentUpon>
+      <DependentUpon>GalievModel.tt</DependentUpon>
     </Compile>
     <Compile Include="MaterialCountHistory.cs">
-      <DependentUpon>BikbulatovModel.tt</DependentUpon>
+      <DependentUpon>GalievModel.tt</DependentUpon>
     </Compile>
     <Compile Include="MaterialType.cs">
-      <DependentUpon>BikbulatovModel.tt</DependentUpon>
+      <DependentUpon>GalievModel.tt</DependentUpon>
     </Compile>
     <Compile Include="PriorChangeWindow.xaml.cs">
       <DependentUpon>PriorChangeWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="PriorityToBrushConverter.cs" />
     <Compile Include="Product.cs">
-      <DependentUpon>BikbulatovModel.tt</DependentUpon>
+      <DependentUpon>GalievModel.tt</DependentUpon>
     </Compile>
     <Compile Include="ProductCostHistory.cs">
-      <DependentUpon>BikbulatovModel.tt</DependentUpon>
+      <DependentUpon>GalievModel.tt</DependentUpon>
     </Compile>
     <Compile Include="ProductMaterial.cs">
-      <DependentUpon>BikbulatovModel.tt</DependentUpon>
+      <DependentUpon>GalievModel.tt</DependentUpon>
     </Compile>
     <Compile Include="ProductSale.cs">
-      <DependentUpon>BikbulatovModel.tt</DependentUpon>
+      <DependentUpon>GalievModel.tt</DependentUpon>
     </Compile>
     <Compile Include="ProductType.cs">
-      <DependentUpon>BikbulatovModel.tt</DependentUpon>
+      <DependentUpon>GalievModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Shop.cs">
-      <DependentUpon>BikbulatovModel.tt</DependentUpon>
+      <DependentUpon>GalievModel.tt</DependentUpon>
     </Compile>
     <Compile Include="StringToImageConverter.cs" />
     <Compile Include="Supplier.cs">
-      <DependentUpon>BikbulatovModel.tt</DependentUpon>
+      <DependentUpon>GalievModel.tt</DependentUpon>
     </Compile>
-    <Page Include="AddEditPage.xaml">
+    <Page Include="AddPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -137,12 +127,25 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Compile Include="AddPage.xaml.cs">
+      <DependentUpon>AddPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="AgentPage.xaml.cs">
       <DependentUpon>AgentPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="GalievModel.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>GalievModel.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GalievModel.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>GalievModel.edmx</DependentUpon>
     </Compile>
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
@@ -172,12 +175,12 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EntityDeploy Include="BikbulatovModel.edmx">
+    <EntityDeploy Include="GalievModel.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>BikbulatovModel.Designer.cs</LastGenOutput>
+      <LastGenOutput>GalievModel.Designer.cs</LastGenOutput>
     </EntityDeploy>
-    <None Include="BikbulatovModel.edmx.diagram">
-      <DependentUpon>BikbulatovModel.edmx</DependentUpon>
+    <None Include="GalievModel.edmx.diagram">
+      <DependentUpon>GalievModel.edmx</DependentUpon>
     </None>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
@@ -189,11 +192,25 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="res\picture.png" />
+  </ItemGroup>
+  <ItemGroup>
     <Resource Include="res\Глазки-save.ico" />
     <Resource Include="res\Глазки-save.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="res\picture.png" />
+    <Resource Include="agents\3c565430c7e94fb3985d8e4f185896a8.jpg" />
+    <Resource Include="agents\picture.png" />
+    <Content Include="GalievModel.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>GalievModel.Context.cs</LastGenOutput>
+      <DependentUpon>GalievModel.edmx</DependentUpon>
+    </Content>
+    <Content Include="GalievModel.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>GalievModel.edmx</DependentUpon>
+      <LastGenOutput>GalievModel.cs</LastGenOutput>
+    </Content>
     <Resource Include="agents\agent_1.png" />
     <Resource Include="agents\agent_10.png" />
     <Resource Include="agents\agent_100.png" />
@@ -327,18 +344,6 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="BikbulatovModel.Context.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>BikbulatovModel.edmx</DependentUpon>
-      <LastGenOutput>BikbulatovModel.Context.cs</LastGenOutput>
-    </Content>
-    <Content Include="BikbulatovModel.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>BikbulatovModel.edmx</DependentUpon>
-      <LastGenOutput>BikbulatovModel.cs</LastGenOutput>
-    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

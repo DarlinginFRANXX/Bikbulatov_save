@@ -1,0 +1,12 @@
+<Image Grid.Column="0" Grid.RowSpan="4" Width="130" Stretch="Uniform"
+                                   HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5">
+                                <Image.Source>
+                                    <Binding Path="Logo">
+                                        <Binding.TargetNullValue>
+                                            <ImageSource>
+                                                res/picture.png
+                                            </ImageSource>
+                                        </Binding.TargetNullValue>
+                                    </Binding>
+                                </Image.Source>
+                            </Image>
